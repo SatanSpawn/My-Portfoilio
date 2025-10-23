@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satya Lohith T - Personal Portfolio</title>
+    
+    <!-- Tailwind CSS CDN --><script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN --><script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
+    
+    <!-- Three.js (for 3D animation - keeping it in case we layer) --><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Google Font (Inter) --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Apply the Inter font family */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000; /* Set a black base */
+            overflow-x: hidden; /* Prevent horizontal scroll from abstract elements */
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; /* slate-900 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; /* slate-700 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; /* slate-600 */
+        }
+        
+        /* New Black Hole background element */
+        #black-hole-bg {
+            position: absolute;
+            top: 5%; /* Adjusted position */
+            left: 50%;
+            transform: translateX(-50%) rotateX(60deg); /* Tilt it slightly */
+            width: 800px; /* Adjust size as needed */
+            height: 400px;
+            background: radial-gradient(ellipse at center, 
+                        rgba(164, 0, 255, 0.4) 0%, /* Bright purple inner glow */
+                        rgba(90, 0, 150, 0.3) 20%,
+                        rgba(30, 0, 50, 0.2) 50%,
+                        rgba(0, 0, 0, 0.1) 70%,
+                        transparent 100%
+                    );
+            border-radius: 50%; /* Make it an ellipse */
+            filter: blur(80px); /* Soft glow */
+            z-index: 0; /* Behind content */
+            pointer-events: none; /* Don't interfere with clicks */
+            animation: rotateHole 60s linear infinite; /* Slow rotation */
+            perspective: 1000px; /* For 3D perception */
+        }
+
+        /* NEW: Nested structure for a more stylized black hole */
+        #black-hole-container {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%) rotateX(60deg);
+            width: 800px;
+            height: 400px;
+            z-index: 0;
+            pointer-events: none;
+            perspective: 1000px;
+            animation: rotateHole 60s linear infinite;
+        }
+
+        #black-hole-aura {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, 
+                        rgba(148, 0, 211, 0.4) 0%, /* Dark Violet */
+                        rgba(75, 0, 130, 0.2) 40%,
+                        transparent 70%
+                    );
+            border-radius: 50%;
+            filter: blur(60px); /* Less blur to make it more defined */
+        }
+
+        #black-hole-core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%; /* Smaller core */
+            height: 15%; /* Flatter core */
+            background: radial-gradient(ellipse at center, 
+                        rgba(230, 200, 255, 1) 0%, /* Bright white-purple center */
+                        rgba(164, 0, 255, 0.8) 30%, 
+                        rgba(90, 0, 150, 0.3) 70%,
+                        transparent 100%
+                    );
+            border-radius: 50%;
+            filter: blur(15px); /* Sharper blur for the core */
+        }
+
+        @keyframes rotateHole {
+            from { transform: translateX(-50%) rotateX(60deg) rotateZ(0deg); }
+            to { transform: translateX(-50%) rotateX(60deg) rotateZ(360deg); }
+        }
+
+        /* Abstract streaks */
+        .abstract-streak {
+            position: absolute;
+            background: linear-gradient(90deg, rgba(128, 0, 128, 0.3) 0%, rgba(75, 0, 130, 0.05) 100%); /* Purple gradient */
+            filter: blur(15px); /* Less blur */
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3; /* More opaque */
+            animation-duration: 15s; /* Faster */
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+            will-change: transform, opacity;
+        }
+
+        .streak-1 { top: 15%; left: -20%; width: 500px; height: 5px; animation-name: moveStreak1; animation-delay: 0s; }
+        .streak-2 { top: 40%; right: -20%; width: 400px; height: 3px; animation-name: moveStreak2; animation-delay: 5s; }
+        .streak-3 { bottom: 20%; left: -15%; width: 600px; height: 6px; animation-name: moveStreak3; animation-delay: 10s; }
+        .streak-4 { top: 60%; left: 10%; width: 300px; height: 4px; animation-name: moveStreak4; animation-delay: 15s; }
+
+
+        @keyframes moveStreak1 {
+            0%, 100% { transform: translateX(0); opacity: 0.3; }
+            50% { transform: translateX(200px); opacity: 0.5; }
+        }
+        @keyframes moveStreak2 {
+            0%, 100% { transform: translateX(0); opacity: 0.3; }
+            50% { transform: translateX(-200px); opacity: 0.5; }
+        }
+        @keyframes moveStreak3 {
+            0%, 100% { transform: translateX(0); opacity: 0.3; }
+            50% { transform: translateX(150px); opacity: 0.4; }
+        }
+        @keyframes moveStreak4 {
+            0%, 100% { transform: translateX(0); opacity: 0.2; }
+            50% { transform: translateX(100px); opacity: 0.35; }
+        }
+
+        /* Scroll-to-reveal animation classes */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            will-change: opacity, transform;
+        }
+        .scroll-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-black text-slate-200">
+
+    <!-- Header / Navigation --><header class="bg-black/70 backdrop-blur-lg sticky top-0 z-50 w-full border-b border-slate-800">
+        <nav class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-white hover:text-purple-500 transition-colors duration-300">
+                Satya Lohith T
+            </a>
+            <div class="space-x-4 md:space-x-6">
+                <a href="#about" class="text-slate-300 hover:text-white transition-colors duration-300">About</a>
+                <a href="#skills" class="text-slate-300 hover:text-white transition-colors duration-300">Skills</a>
+                <a href="#projects" class="text-slate-300 hover:text-white transition-colors duration-300">Projects</a>
+                <a href="#contact" class="text-slate-300 hover:text-white transition-colors duration-300">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto max-w-6xl px-4 py-12 md:py-20">
+
+        <!-- Hero Section --><section id="hero" class="text-center min-h-[70vh] flex flex-col justify-center items-center relative overflow-hidden">
+            <!-- New Black Hole Background Element --><div id="black-hole-bg"></div>
+            
+            <!-- NEW: Nested black hole structure -->
+            <div id="black-hole-container">
+                <div id="black-hole-aura"></div>
+                <div id="black-hole-core"></div>
+            </div>
+
+            <!-- Abstract Streaks --><div class="abstract-streak streak-1"></div>
+            <div class="abstract-streak streak-2"></div>
+            <div class="abstract-streak streak-3"></div>
+            <div class="abstract-streak streak-4"></div>
+
+            <!-- Hero Content (in front of background elements) --><div class="relative z-10 flex flex-col justify-center items-center">
+                <div class="w-32 h-32 md:w-40 md:h-40 mb-8">
+                    <!-- TODO: Replace this placeholder with a direct URL to your profile picture --><img src="https://placehold.co/200x200/0f172a/E2E8F0?text=Your+Photo" alt="Satya Lohith T" class="rounded-full w-full h-full object-cover border-4 border-slate-800 shadow-lg">
+                </div>
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">
+                    Hi, I'm <span class="text-purple-500">Satya Lohith T</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-400 max-w-2xl">
+                    I’m a software engineer and full-stack developer exploring how AI, design, and innovation converge to create technology with real-world purpose.
+                </p>
+            </div>
+        </section>
+
+        <!-- About Me Section --><section id="about" class="py-20 md:py-32">
+            <h2 class="scroll-reveal text-3xl md:text-4xl font-bold text-white text-center mb-12">
+                About Me
+            </h2>
+            <div class="scroll-reveal max-w-3xl mx-auto bg-slate-900 rounded-lg p-6 md:p-8 shadow-2xl border border-slate-800">
+                <p class="text-lg text-slate-300 leading-relaxed">
+                    I got into software development around mid-2024, drawn by the idea of building scalable applications that could actually make a difference. What started as curiosity quickly turned into a pursuit — blending my passion for technology with a drive to create meaningful impact. Along the way, I’ve explored full-stack development, AI, and system design, participating in numerous hackathons and collaborative projects that pushed me to think beyond code. With a natural knack for networking and leadership, I enjoy connecting ideas, people, and innovation to build solutions that last.
+                </p>
+            </div>
+        </section>
+
+        <!-- Skills Section --><section id="skills" class="py-20 md:py-32">
+            <h2 class="scroll-reveal text-3xl md:text-4xl font-bold text-white text-center mb-12">
+                My Tech Stack
+            </h2>
+            <div class="max-w-4xl mx-auto">
+                
+                <!-- Single Tag Cloud --><div class="scroll-reveal flex flex-wrap gap-3 justify-center">
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">Python</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">C++</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">React.js</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">Tailwind CSS</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">Node.js</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">Flask</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">PyTorch</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">Scikit-learn</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">MongoDB</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">PostgreSQL</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">Solidity</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">IPFS</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">Git</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">Docker</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">Figma</span>
+                    <span class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md">Adobe XD</span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Projects Section --><section id="projects" class="py-20 md:py-32">
+            <h2 class="scroll-reveal text-3xl md:text-4xl font-bold text-white text-center mb-12">
+                Featured Projects
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Project Card Example 1 --><div class="scroll-reveal bg-slate-900 rounded-lg overflow-hidden shadow-xl border border-slate-800 flex flex-col transition-all duration-300 ease-in-out hover:scale-[1.03] hover:shadow-purple-500/10 hover:border-slate-700">
+                    <img src="https://placehold.co/600x400/0f172a/E2E8F0?text=Geofence+App" alt="Attendance App with Geofencing" class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold text-white mb-2">Attendance App with Geofencing</h3>
+                        <p class="text-slate-400 mb-4 flex-grow">
+                            A smart attendance solution that leverages geofencing to automatically track and record presence, ensuring accuracy and efficiency without manual intervention.
+                        </p>
+                        <div class="flex space-x-4 mt-auto">
+                            <a href="#" class="flex items-center text-purple-500 hover:text-white transition-colors duration-300">
+                                <i data-lucide="github" class="w-5 h-5 mr-2"></i>
+                                GitHub
+                            </a>
+                            <a href="#" class="flex items-center text-purple-500 hover:text-white transition-colors duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 mr-2"></i>
+                                Live Demo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Card Example 2 --><div class="scroll-reveal bg-slate-900 rounded-lg overflow-hidden shadow-xl border border-slate-800 flex flex-col transition-all duration-300 ease-in-out hover:scale-[1.03] hover:shadow-purple-500/10 hover:border-slate-700" style="transition-delay: 150ms;">
+                    <img src="https://placehold.co/600x400/0f172a/E2E8F0?text=AI+Diagnosis" alt="AI Medical Diagnosis System" class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold text-white mb-2">AI-Powered Autonomous Medical Diagnosis System</h3>
+                        <p class="text-slate-400 mb-4 flex-grow">
+                            An AI-driven system designed to analyze medical data in real time and provide accurate diagnostic suggestions, aiming to streamline healthcare delivery and decision-making.
+                        </p>
+                        <div class="flex space-x-4 mt-auto">
+                            <a href="#" class="flex items-center text-purple-500 hover:text-white transition-colors duration-300">
+                                <i data-lucide="github" class="w-5 h-5 mr-2"></i>
+                                GitHub
+                            </a>
+                            <a href="#" class="flex items-center text-purple-500 hover:text-white transition-colors duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 mr-2"></i>
+                                Live Demo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Card Example 3 --><div class="scroll-reveal bg-slate-900 rounded-lg overflow-hidden shadow-xl border border-slate-800 flex flex-col transition-all duration-300 ease-in-out hover:scale-[1.03] hover:shadow-purple-500/10 hover:border-slate-700" style="transition-delay: 300ms;">
+                    <img src="https://placehold.co/600x400/0f172a/E2E8F0?text=SafeGuard+Web3" alt="SafeGuard Evidence (Web3-powered)" class="w-full h-48 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold text-white mb-2">SafeGuard Evidence (Web3-powered)</h3>
+                        <p class="text-slate-400 mb-4 flex-grow">
+                            A decentralized platform enabling secure, private, and tamper-proof storage of sensitive evidence, empowering users to protect critical data with Web3 technology.
+                        </d>
+                        <div class="flex space-x-4 mt-auto">
+                            <a href="#" class="flex items-center text-purple-500 hover:text-white transition-colors duration-300">
+                                <i data-lucide="github" class="w-5 h-5 mr-2"></i>
+                                GitHub
+                            </a>
+                            <a href="#" class="flex items-center text-purple-500 hover:text-white transition-colors duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 mr-2"></i>
+                                Live Demo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Contact Section --><section id="contact" class="py-20 md:py-32 text-center">
+            <h2 class="scroll-reveal text-3xl md:text-4xl font-bold text-white mb-6">
+                Let's Connect
+            </h2>
+            <p class="scroll-reveal text-xl text-slate-400 max-w-lg mx-auto mb-10" style="transition-delay: 100ms;">
+                I'm currently open to new opportunities and collaborations. Feel free to reach out!
+            </p>
+            
+            <!-- NEW Contact Buttons (styled like tech stack) --><div class="scroll-reveal flex flex-wrap gap-4 justify-center mb-12" style="transition-delay: 200ms;">
+                <!-- TODO: Replace "#" with your actual profile links --><a href="https://linkedin.com/in/#" target="_blank" rel="noopener noreferrer" class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md transition-all duration-300 hover:bg-slate-700 hover:text-purple-300">
+                    LinkedIn
+                </a>
+                <a href="https://x.com/#" target="_blank" rel="noopener noreferrer" class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md transition-all duration-300 hover:bg-slate-700 hover:text-purple-300">
+                    X (Twitter)
+                </a>
+                <a href="https://instagram.com/#" target="_blank" rel="noopener noreferrer" class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md transition-all duration-300 hover:bg-slate-700 hover:text-purple-300">
+                    Instagram
+                </a>
+                <a href="mailto:satya.lohith@example.com" class="bg-slate-800 text-purple-400 py-2 px-4 rounded-lg text-lg font-medium shadow-md transition-all duration-300 hover:bg-slate-700 hover:text-purple-300">
+                    Email
+                </a>
+            </div>
+
+            <a href="/path/to/your-resume.pdf" 
+               download="SatyaLohithT_Resume.pdf"
+               class="scroll-reveal bg-purple-600 text-white font-medium py-3 px-8 rounded-lg shadow-lg hover:bg-purple-700 transition-all duration-300 ease-in-out transform hover:scale-105"
+               style="transition-delay: 300ms;">
+                Download Resume
+            </a>
+        </section>
+
+    </main>
+
+    <!-- Footer --><footer class="bg-black border-t border-slate-900">
+        <div class="container mx-auto max-w-6xl px-4 py-6 text-center text-slate-500">
+            &copy; 2025 Satya Lohith T. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Wait for the DOM to be fully loaded before running scripts
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Initialize Lucide Icons (still useful for project cards, etc.)
+            try {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                } else {
+                    console.error("Lucide library not loaded.");
+                }
+            } catch (error) {
+                console.error("Lucide icons failed to initialize.", error);
+            }
+
+            // 2. Simple smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // 3. Scroll-to-Reveal Animation (IntersectionObserver)
+            try {
+                const targets = document.querySelectorAll('.scroll-reveal');
+                
+                const observer = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            observer.unobserve(entry.target); // Animate only once
+                        }
+                    });
+                }, {
+                    root: null, // relative to the viewport
+                    threshold: 0.1 // 10% of the item must be visible
+                });
+
+                targets.forEach(target => {
+                    observer.observe(target);
+                });
+
+            } catch (error) {
+                console.error("IntersectionObserver failed to initialize.", error);
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+
